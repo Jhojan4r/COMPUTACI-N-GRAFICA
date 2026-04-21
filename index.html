@@ -1,59 +1,288 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>linea dinamica</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portafolio Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* BOTONES GENERALES MEJORADOS */
+.buttons button,
+.card a,
+.card button,
+nav div button,
+.filters button{
+    position: relative;
+    overflow: hidden;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.35s ease;
+}
+
+/* EFECTO GRADIENTE PREMIUM */
+.primary{
+    background: linear-gradient(135deg,#2563eb,#1e40af);
+    color: white;
+    box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+}
+
+.primary:hover{
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(37,99,235,0.7);
+}
+
+/* BOTÓN SECUNDARIO GLASS */
+.secondary{
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.2);
+    color:#3b82f6;
+    backdrop-filter: blur(10px);
+}
+
+.secondary:hover{
+    background:#2563eb;
+    color:white;
+    border-color:#2563eb;
+    transform: translateY(-3px);
+}
+
+/* EFECTO LUZ AL PASAR EL MOUSE */
+.buttons button::before,
+.card a::before,
+nav div button::before,
+.filters button::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background: linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+    transition: 0.5s;
+}
+
+.buttons button:hover::before,
+.card a:hover::before,
+nav div button:hover::before,
+.filters button:hover::before{
+    left:100%;
+}
+
+/* BOTONES DE TARJETAS */
+.card a{
+    margin-top:15px;
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    border:none;
+    box-shadow: 0 8px 20px rgba(37,99,235,0.4);
+}
+
+.card a:hover{
+    transform: scale(1.07);
+    box-shadow: 0 12px 30px rgba(37,99,235,0.7);
+}
+
+/* BOTONES FILTRO MÁS MODERNOS */
+.filters button{
+    border-radius: 30px;
+    padding: 8px 18px;
+}
+
+.filters button:hover{
+    background: linear-gradient(135deg,#2563eb,#1e40af);
+    border-color:#2563eb;
+    transform: scale(1.1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background: radial-gradient(circle at top,#0f172a,#020617);color:white;}
+.container{max-width:1200px;margin:auto;padding:40px;}
+
+nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:60px;}
+nav h1{font-size:20px;font-weight:600;}
+nav div button{
+    margin-left:10px;padding:10px 18px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    color:white;border-radius:8px;
+    cursor:pointer;backdrop-filter:blur(10px);
+    transition:.3s;
+}
+nav button:hover{background:#2563eb;}
+
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;}
+.text h1{font-size:60px;font-weight:700;}
+.text span{color:#3b82f6;}
+.text p{margin-top:20px;color:#9ca3af;line-height:1.6;}
+
+.buttons{margin-top:30px;}
+.buttons button{padding:12px 20px;border:none;border-radius:10px;cursor:pointer;margin-right:10px;font-weight:600;}
+.primary{background:#2563eb;color:white;}
+.secondary{background:transparent;border:1px solid #2563eb;color:#2563eb;}
+
+.image{display:flex;justify-content:center;}
+.circle{width:320px;height:320px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1e40af);padding:6px;}
+.circle img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+
+.section{margin-top:100px;}
+.section h2{margin-bottom:20px;font-size:28px;}
+.section p{color:#9ca3af;margin-bottom:30px;}
+
+.filters{margin-bottom:20px;}
+.filters button{
+    margin-right:10px;padding:8px 15px;
+    border-radius:20px;border:1px solid rgba(255,255,255,0.2);
+    background:transparent;color:white;
+    cursor:pointer;transition:.3s;
+}
+.filters button:hover{background:#2563eb;border-color:#2563eb;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;}
+
+.card{
+    padding:25px;border-radius:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    transition:.3s;
+    position:relative;
+    text-align:center;
+}
+
+.card:hover{
+    transform:translateY(-10px) scale(1.03);
+    border-color:#2563eb;
+}
+
+.card h3{margin-bottom:10px;}
+.card p{font-size:14px;color:#9ca3af;}
+
+.card a, .card button{
+    margin-top:15px;
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+}
+
+.tag{
+    position:absolute;
+    top:15px;
+    right:15px;
+    background:#2563eb;
+    padding:4px 10px;
+    border-radius:10px;
+    font-size:12px;
+}
+
+@media(max-width:900px){
+    .hero{grid-template-columns:1fr;text-align:center;}
+}
+</style>
 </head>
+
 <body>
-    <h2>Línea Dinámica</h2>
-    <canvas id="myCanvas" width="800" height="400" style="border: 1px solid black;"></canvas>
-<!-- CODIGO JAVASCRIP -->
+<div class="container">
+
+<nav>
+    <h1>Computación Gráfica</h1>
+</nav>
+
+<div class="hero">
+<div class="text">
+    <h1>Hola, soy <span>Jhojan Rodolfo</span></h1>
+    <p>Futuro Ingeniero de Sistemas por la Universidad Tecnológica de los Andes. Me apasiona transformar ideas en código, especializándome en el desarrollo de software web y móvil. Además, exploro las posibilidades de la computación gráfica para crear entornos visuales impactantes y funcionales.</p>
+</div>
+
+<div class="image">
+    <div class="circle">
+        <img src="https://dina.concytec.gob.pe/appDirectorioCTI/UploadFotoPath.do?tipo=visualizar_archivo&id_investigador=155784&ruta=/documents/docInvestigadores/155784/imagenes/IMG_20230529_121644.jpg">
+    </div>
+</div>
+</div>
+
+<!-- NUEVA SECCIÓN COMPUTACIÓN GRÁFICA -->
+<div id="grafica" class="section">
+<h2>Actividades en clase</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>Proyecto Círculo</h3>
+<a href="circulo.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+<h3>Cuadrado y Triángulo</h3>
+<a href="cuadrado.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+<h3>Gráfico de Barras</h3>
+<a href="barras.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+<h3>Función Matemática</h3>
+<a href="funcion.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+<h3>Gráfico Lineal</h3>
+<a href="lineal.html">Ver proyecto</a>
+</div>
+
+</div>
+</div>
+
+<!-- ACTIVIDADES -->
+<div id="actividades" class="section">
+<h2>Actividades</h2>
+
+<div class="grid">
+<div class="card">
+<h3>Gráfico de Barras Dinámico</h3>
+<a href="barrasdin.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+<h3>Gráfico de Puntos en Movimiento</h3>
+<a href="puntos.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+<h3>Curva Dinámica de la Función Coseno</h3>
+<a href="funcion2.html">Ver proyecto</a>
+</div>
+
+</div>
+</div>
+
+</div>
 
 <script>
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
+function scrollToSection(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
 
-    // variables necesarias para el graficos
-
-var xstart = 0; // punto de inicio en el eje x
-var xend = 800; // punto de fin en el eje y
-var step  = 0.1; // paso para el incremento de x
-var time=0; // variable para animar el grafico 
-
-// funcion para dibujar el grafico
-function drawGraph() {
-    //limpiar el lienzo antes de dibujar el nuevo gráfico
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // limpiar el canvas
-// configurar el estilo de la línea
-ctx.beginPath();
-ctx.strokeStyle= 'blue'; // color de la línea
-ctx.lineWidth = 2; // grosor de la línea
-//dibuja la funcion  Y = sin(x)
-for (var x = xstart; x < xend; x += step) {
-    var y = Math.sin(x*0.01+time); // función para crear una onda sinusoidal con el tiempo para animar
-
-    if (x === xstart) {
-        ctx.moveTo(x,canvas.height/2 -y*100); // posiciona el el punto de inicio en el eje x y el centro del canvas en el eje y
-    } 
-    
-    else {
-        ctx.lineTo(x,canvas.height/2-y*100); // dibujar la línea
+function filtrar(categoria){
+    const cards = document.querySelectorAll('#proyectosGrid .card');
+    cards.forEach(card=>{
+        if(categoria==='all' || card.dataset.cat===categoria){
+            card.style.display='block';
+        }else{
+            card.style.display='none';
         }
+    });
 }
-        // dibuja la línea en el canvas
-ctx.stroke(); // dibujar la línea
-}
+</script>
 
-// función para animar el gráfico
-function animate() {
-    drawGraph(); // dibujar el gráfico inicial   
-    time += 0.08; // incrementar el tiempo para animar la onda
-    requestAnimationFrame(animate); // llama a la funcion de animación
-}
-
-//inicia la animación
-animate(); // iniciar la animación
-</script>  
 </body>
 </html>

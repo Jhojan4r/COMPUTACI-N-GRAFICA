@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Función Coseno</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    background:linear-gradient(135deg,#020617,#0f172a);
+    text-align:center;
+    color:#e2e8f0;
+    font-family:'Manrope',sans-serif;
+}
+
+.header{
+    margin-top:30px;
+}
+
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:38px;
+}
+
+h3{
+    margin-top:8px;
+    font-weight:300;
+    color:#94a3b8;
+}
+
+p{
+    margin-top:10px;
+    color:#94a3b8;
+    max-width:700px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+canvas{
+    background:#ffffff;
+    margin-top:40px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.footer{
+    margin-top:50px;
+    font-size:13px;
+    color:#64748b;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Curva Dinámica Coseno</h1>
+    <h3>Realizado por Jhojan Rodolfo Aragon Suni</h3>
+</div>
+
+<canvas id="canvas" width="620" height="420"></canvas>
+
+<div class="footer">
+    Computación Gráfica
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let desplazamiento = 0;
+
+function dibujar(){
+    ctx.clearRect(0,0,620,420);
+    // --- DIBUJAR EJES (Líneas) ---
+    ctx.beginPath();
+    ctx.strokeStyle = "#94a3b8"; 
+    ctx.lineWidth = 1;
+    ctx.moveTo(0, 210); ctx.lineTo(620, 210); // Eje X
+    ctx.moveTo(310, 0); ctx.lineTo(310, 420); // Eje Y
+    ctx.stroke();
+
+    // --- AÑADIR ETIQUETAS X e Y ---
+    ctx.fillStyle = "#475569"; // Color del texto (gris oscuro)
+    ctx.font = "bold 16px Manrope"; // Estilo de fuente
+    
+    // Etiqueta Y (arriba)
+    ctx.fillText("Y", 320, 20); 
+    
+    // Etiqueta X (a la derecha)
+    ctx.fillText("X", 600, 200); 
+
+    // --- DIBUJAR CURVA COSENO (Tu código original) ---
+    ctx.beginPath();
+    for(let x=0; x<620; x++){
+        let y = 210 + Math.cos((x+desplazamiento)*0.05)*100;
+        if(x===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+    }
+
+
+    for(let x=0; x<620; x++){
+        let y = 210 + Math.cos((x+desplazamiento)*0.05)*100;
+
+        if(x===0){
+            ctx.moveTo(x,y);
+        }else{
+            ctx.lineTo(x,y);
+        }
+    }
+
+    ctx.strokeStyle = "#22c55e";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "#22c55e";
+    ctx.shadowBlur = 10;
+    ctx.stroke();
+}
+
+function animar(){
+    desplazamiento += 3;
+    dibujar();
+}
+
+setInterval(animar,40);
+dibujar();
+</script>
+
+</body>
+</html>

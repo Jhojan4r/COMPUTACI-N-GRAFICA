@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puntos en Movimiento</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    background:linear-gradient(135deg,#020617,#0f172a);
+    text-align:center;
+    color:#e2e8f0;
+    font-family:'Manrope',sans-serif;
+}
+
+.header{
+    margin-top:30px;
+}
+
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:38px;
+}
+
+h3{
+    margin-top:8px;
+    font-weight:300;
+    color:#94a3b8;
+}
+
+p{
+    margin-top:10px;
+    color:#94a3b8;
+}
+
+canvas{
+    background:#020617;
+    margin-top:40px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.footer{
+    margin-top:50px;
+    font-size:13px;
+    color:#64748b;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Puntos en Movimiento</h1>
+    <h3>Realizado por Jhojan Rodolfo Aragon Suni</h3>
+</div>
+
+<canvas id="canvas" width="520" height="420"></canvas>
+
+<div class="footer">
+    Computación Gráfica
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let puntos = [];
+
+// crear puntos con velocidad
+for(let i=0;i<6;i++){
+    puntos.push({
+        x: Math.random()*520,
+        y: Math.random()*420,
+        vx: (Math.random()-0.5)*4,
+        vy: (Math.random()-0.5)*4
+    });
+}
+
+function dibujar(){
+    ctx.clearRect(0,0,520,420);
+
+    puntos.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,6,0,Math.PI*2);
+        ctx.fillStyle="#22d3ee";
+        ctx.fill();
+
+        // sombra glow
+        ctx.shadowColor="#22d3ee";
+        ctx.shadowBlur=10;
+    });
+}
+
+function actualizar(){
+    puntos.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // rebote en bordes
+        if(p.x<0 || p.x>520) p.vx *= -1;
+        if(p.y<0 || p.y>420) p.vy *= -1;
+    });
+
+    dibujar();
+}
+
+setInterval(actualizar,30);
+dibujar();
+</script>
+
+</body>
+</html>

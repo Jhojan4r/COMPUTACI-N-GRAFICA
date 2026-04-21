@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gráfico de Barras Dinámico</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    background:linear-gradient(135deg,#020617,#0f172a);
+    color:#e2e8f0;
+    text-align:center;
+    font-family:'Manrope',sans-serif;
+}
+
+.header{
+    margin-top:30px;
+}
+
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:38px;
+}
+
+h3{
+    margin-top:8px;
+    font-weight:300;
+    color:#94a3b8;
+}
+
+p{
+    margin-top:10px;
+    color:#94a3b8;
+}
+
+.chart{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    height:320px;
+    gap:25px;
+    margin-top:60px;
+    padding:20px;
+    border-left:2px solid rgba(255,255,255,0.2);
+    border-bottom:2px solid rgba(255,255,255,0.2);
+    max-width:900px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.bar-container{
+    text-align:center;
+}
+
+.bar{
+    width:55px;
+    background:linear-gradient(180deg,#3b82f6,#1d4ed8);
+    border-radius:6px 6px 0 0;
+    transition:0.5s ease;
+    box-shadow:0 4px 12px rgba(59,130,246,0.4);
+}
+
+.bar:hover{
+    transform:scale(1.05);
+}
+
+.value{
+    margin-top:8px;
+    font-size:14px;
+}
+
+.footer{
+    margin-top:60px;
+    font-size:13px;
+    color:#64748b;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Gráfico de Barras Dinámico</h1>
+    <h3>Realizado por Jhojan Rodolfo Aragon Suni</h3>
+</div>
+
+<div class="chart" id="chart"></div>
+
+<div class="footer">
+    Computación Gráfica
+</div>
+
+<script>
+const chart = document.getElementById("chart");
+
+let barras = [];
+
+for(let i=0;i<5;i++){
+    let cont = document.createElement("div");
+    cont.classList.add("bar-container");
+
+    let bar = document.createElement("div");
+    bar.classList.add("bar");
+
+    let value = document.createElement("div");
+    value.classList.add("value");
+
+    cont.appendChild(bar);
+    cont.appendChild(value);
+    chart.appendChild(cont);
+
+    barras.push({bar,value});
+}
+
+function actualizar(){
+    barras.forEach(b=>{
+        let v = Math.floor(Math.random()*90)+10;
+        b.bar.style.height = v*2 + "px";
+        b.value.innerText = v;
+    });
+}
+
+setInterval(actualizar,1000);
+actualizar();
+</script>
+
+</body>
+</html>

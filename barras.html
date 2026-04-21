@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráfico de Barras</title>
+</head>
+<body>
+
+<h2>Gráfico de Barras</h2>
+<h3>Realizado por Jhojan Rodolfo Aragon Suni</h3>
+
+<canvas id="grafico" width="450" height="400" style="border:4px solid black;"></canvas>
+
+<script>
+    const canvas = document.getElementById("grafico");
+    const ctx = canvas.getContext("2d");
+
+    // Datos
+    const valores = [50, 60, 70, 90, 100];
+    const colores = ["red", "blue", "green", "orange", "purple"];
+
+    // Configuración
+    const anchoBarra = 50;
+    const espacio = 25;
+    let x = 50;
+
+    valores.forEach((valor, i) => {
+        let altura = valor * 2; // escala
+
+        // Color sólido
+        ctx.fillStyle = colores[i];
+
+        // 🔹 Dibujar barra desde abajo
+        ctx.fillRect(x, canvas.height - altura, anchoBarra, altura);
+        ctx.strokeRect(x, canvas.height - altura, anchoBarra, altura);
+
+        // Texto porcentaje
+        ctx.fillStyle = "red";
+        ctx.font = "16px Arial";
+        ctx.fillText(valor + "%", x + 5, canvas.height - altura - 10);
+
+        x += anchoBarra + espacio;
+    });
+</script>
+
+</body>
+</html>
