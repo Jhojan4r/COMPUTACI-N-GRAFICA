@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Traslación en eje X</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+}
+#info {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    
+    z-index: 10;
+    
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+<!-- TEXTO EN PANTALLA -->
+<div id="info">
+    <strong>Traslación animada de un cubo en el espacio 3D</strong><br>
+    Realizador por Jhojan Rodolfo Aragon Suni
+</div>
+<!-- THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+// ESCENA
+const scene = new THREE.Scene();
+
+// CÁMARA
+const camera = new THREE.PerspectiveCamera(
+    75, window.innerWidth / window.innerHeight, 0.1, 1000
+);
+camera.position.z = 5;
+
+// RENDER
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// CUBO
+const geometry = new THREE.BoxGeometry(1,1,1);
+const material = new THREE.MeshNormalMaterial();
+const cubo = new THREE.Mesh(geometry, material);
+scene.add(cubo);
+
+// VARIABLES DE MOVIMIENTO
+let direccion = 1;     // 1 = derecha, -1 = izquierda
+const velocidad = 0.1;
+const limite = 3.5;
+
+// ANIMACIÓN
+function animate() {
+    requestAnimationFrame(animate);
+
+    // 🔥 TRASLACIÓN EN EJE X
+    cubo.position.x += velocidad * direccion;
+
+    // 🔥 CAMBIO DE DIRECCIÓN EN LOS LÍMITES
+    if (cubo.position.x > limite || cubo.position.x < -limite) {
+        direccion *= -1;
+    }
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// RESPONSIVE
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+</script>
+
+</body>
+</html>

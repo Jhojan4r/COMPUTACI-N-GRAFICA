@@ -7,185 +7,232 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* BOTONES GENERALES MEJORADOS */
-.buttons button,
-.card a,
-.card button,
-nav div button,
-.filters button{
-    position: relative;
-    overflow: hidden;
-    padding: 12px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.35s ease;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
 }
 
-/* EFECTO GRADIENTE PREMIUM */
-.primary{
-    background: linear-gradient(135deg,#2563eb,#1e40af);
-    color: white;
-    box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+body{
+    background:#0b0f1a;
+    color:#e5e7eb;
 }
 
-.primary:hover{
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 15px 35px rgba(37,99,235,0.7);
+/* CONTENEDOR */
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:60px 30px;
 }
 
-/* BOTÓN SECUNDARIO GLASS */
-.secondary{
-    background: rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.2);
-    color:#3b82f6;
+/* NAV */
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:80px;
+}
+
+nav h1{
+    font-size:18px;
+    font-weight:500;
+    color:#cbd5f5;
+}
+
+/* HERO */
+.hero{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:60px;
+    align-items:center;
+}
+
+.text h1{
+    font-size:48px;
+    font-weight:600;
+    line-height:1.2;
+}
+
+.text span{
+    color:#60a5fa;
+}
+
+.text p{
+    margin-top:20px;
+    color:#94a3b8;
+    line-height:1.7;
+    font-size:15px;
+}
+
+.menu button{
+    background:transparent;
+    border:none; /* ❌ quitamos borde */
+    color:#94a3b8;
+    padding:6px 4px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    position:relative;
+    transition:color 0.3s ease;
+}
+
+/* EFECTO HOVER */
+.menu button:hover{
+    color:#60a5fa;
+}
+
+/* LINEA ANIMADA (underline) */
+.menu button::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-4px;
+    width:0%;
+    height:2px;
+    background:#60a5fa;
+    transition:0.3s;
+}
+
+/* ANIMACIÓN */
+.menu button:hover::after{
+    width:100%;
+}
+
+/* CLICK */
+.menu button:active{
+    transform:scale(0.95);
+}
+
+/* IMAGEN */
+.image{
+    display:flex;
+    justify-content:center;
+}
+
+.circle{
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    padding:4px;
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
+}
+
+.circle img{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+/* SECCIONES */
+.section{
+    margin-top:120px;
+}
+
+.section h2{
+    font-size:22px;
+    font-weight:500;
+    margin-bottom:25px;
+    color:#cbd5f5;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
+
+/* CARDS MEJORADAS */
+.card{
+    padding:22px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
     backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position:relative;
+    overflow:hidden;
 }
 
-.secondary:hover{
-    background:#2563eb;
-    color:white;
-    border-color:#2563eb;
-    transform: translateY(-3px);
-}
-
-/* EFECTO LUZ AL PASAR EL MOUSE */
-.buttons button::before,
-.card a::before,
-nav div button::before,
-.filters button::before{
+/* EFECTO LUZ SUAVE */
+.card::before{
     content:'';
     position:absolute;
     top:0;
     left:-100%;
     width:100%;
     height:100%;
-    background: linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
-    transition: 0.5s;
+    background: linear-gradient(120deg,transparent,rgba(255,255,255,0.08),transparent);
+    transition:0.6s;
 }
 
-.buttons button:hover::before,
-.card a:hover::before,
-nav div button:hover::before,
-.filters button:hover::before{
+.card:hover::before{
     left:100%;
 }
 
-/* BOTONES DE TARJETAS */
-.card a{
-    margin-top:15px;
-    background: linear-gradient(135deg,#2563eb,#3b82f6);
-    border:none;
-    box-shadow: 0 8px 20px rgba(37,99,235,0.4);
-}
-
-.card a:hover{
-    transform: scale(1.07);
-    box-shadow: 0 12px 30px rgba(37,99,235,0.7);
-}
-
-/* BOTONES FILTRO MÁS MODERNOS */
-.filters button{
-    border-radius: 30px;
-    padding: 8px 18px;
-}
-
-.filters button:hover{
-    background: linear-gradient(135deg,#2563eb,#1e40af);
-    border-color:#2563eb;
-    transform: scale(1.1);
-}
-
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background: radial-gradient(circle at top,#0f172a,#020617);color:white;}
-.container{max-width:1200px;margin:auto;padding:40px;}
-
-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:60px;}
-nav h1{font-size:20px;font-weight:600;}
-nav div button{
-    margin-left:10px;padding:10px 18px;
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.1);
-    color:white;border-radius:8px;
-    cursor:pointer;backdrop-filter:blur(10px);
-    transition:.3s;
-}
-nav button:hover{background:#2563eb;}
-
-.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;}
-.text h1{font-size:60px;font-weight:700;}
-.text span{color:#3b82f6;}
-.text p{margin-top:20px;color:#9ca3af;line-height:1.6;}
-
-.buttons{margin-top:30px;}
-.buttons button{padding:12px 20px;border:none;border-radius:10px;cursor:pointer;margin-right:10px;font-weight:600;}
-.primary{background:#2563eb;color:white;}
-.secondary{background:transparent;border:1px solid #2563eb;color:#2563eb;}
-
-.image{display:flex;justify-content:center;}
-.circle{width:320px;height:320px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1e40af);padding:6px;}
-.circle img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
-
-.section{margin-top:100px;}
-.section h2{margin-bottom:20px;font-size:28px;}
-.section p{color:#9ca3af;margin-bottom:30px;}
-
-.filters{margin-bottom:20px;}
-.filters button{
-    margin-right:10px;padding:8px 15px;
-    border-radius:20px;border:1px solid rgba(255,255,255,0.2);
-    background:transparent;color:white;
-    cursor:pointer;transition:.3s;
-}
-.filters button:hover{background:#2563eb;border-color:#2563eb;}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;}
-
-.card{
-    padding:25px;border-radius:18px;
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.08);
-    backdrop-filter:blur(12px);
-    transition:.3s;
-    position:relative;
-    text-align:center;
-}
-
+/* HOVER GENERAL */
 .card:hover{
-    transform:translateY(-10px) scale(1.03);
-    border-color:#2563eb;
+    transform: translateY(-6px);
+    border-color: rgba(96,165,250,0.4);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
-.card h3{margin-bottom:10px;}
-.card p{font-size:14px;color:#9ca3af;}
+/* TITULO */
+.card h3{
+    font-size:16px;
+    font-weight:500;
+    margin-bottom:10px;
+    color:#e2e8f0;
+}
 
-.card a, .card button{
-    margin-top:15px;
-    padding:8px 12px;
-    border:none;
-    border-radius:8px;
-    background:#2563eb;
-    color:white;
-    cursor:pointer;
+/* TEXTO */
+.card p{
+    font-size:13px;
+    color:#94a3b8;
+    line-height:1.5;
+}
+
+/* BOTÓN MEJORADO */
+.card a{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:18px;
+    font-size:13px;
+    color:#60a5fa;
     text-decoration:none;
-    display:inline-block;
+    font-weight:500;
+    transition:0.3s;
 }
 
-.tag{
-    position:absolute;
-    top:15px;
-    right:15px;
-    background:#2563eb;
-    padding:4px 10px;
-    border-radius:10px;
-    font-size:12px;
+/* FLECHITA → */
+.card a::after{
+    content:'→';
+    font-size:14px;
+    transition:0.3s;
 }
 
+/* HOVER LINK */
+.card a:hover{
+    color:#93c5fd;
+}
+
+.card a:hover::after{
+    transform: translateX(4px);
+}
+/* RESPONSIVE */
 @media(max-width:900px){
-    .hero{grid-template-columns:1fr;text-align:center;}
-}
-</style>
+    .hero{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .text h1{
+        font-size:36px;
+    }
+}</style>
 </head>
 
 <body>
@@ -193,6 +240,12 @@ nav button:hover{background:#2563eb;}
 
 <nav>
     <h1>Computación Gráfica</h1>
+
+    <div class="menu">
+        <button onclick="scrollToSection('grafica')">Clases</button>
+        <button onclick="scrollToSection('actividades')">Actividad 4</button>
+        <button onclick="scrollToSection('actividad5')">Actividad 5</button>
+    </div>
 </nav>
 
 <div class="hero">
@@ -244,22 +297,51 @@ nav button:hover{background:#2563eb;}
 
 <!-- ACTIVIDADES -->
 <div id="actividades" class="section">
-<h2>Actividades</h2>
+<h2>Actividad 4</h2>
 
 <div class="grid">
 <div class="card">
 <h3>Gráfico de Barras Dinámico</h3>
+<p>Visualización interactiva de datos mediante barras que cambian dinámicamente usando JavaScript y manipulación del DOM.</p>
 <a href="barrasdin.html">Ver proyecto</a>
 </div>
 
 <div class="card">
 <h3>Gráfico de Puntos en Movimiento</h3>
+<p>Simulación de partículas en movimiento dentro de un canvas, aplicando animaciones en tiempo real y lógica de actualización.</p>
 <a href="puntos.html">Ver proyecto</a>
 </div>
 
 <div class="card">
 <h3>Curva Dinámica de la Función Coseno</h3>
+<p>Representación gráfica animada de la función coseno, mostrando su comportamiento periódico mediante renderizado continuo.</p>
 <a href="funcion2.html">Ver proyecto</a>
+</div>
+
+</div>
+</div>
+
+<div id="actividad5" class="section">
+<h2>Actividad 5 - Transformaciones 3D</h2>
+
+<div class="grid">
+
+<div class="card">
+    <h3>Traslación 3D</h3>
+    <p>Animación de un cubo desplazándose en el espacio tridimensional utilizando transformaciones en JavaScript.</p>
+    <a href="ejercicio3D_1.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+    <h3>Rotación 3D</h3>
+    <p>Rotación continua de un objeto tridimensional sobre sus ejes X, Y y Z para visualizar su comportamiento dinámico.</p>
+    <a href="ejercicio3D_2.html">Ver proyecto</a>
+</div>
+
+<div class="card">
+    <h3>Transformaciones Interactivas</h3>
+    <p>Manipulación en tiempo real de traslación, rotación y escala mediante controles del usuario en JavaScript.</p>
+    <a href="ejercicio3D_3.html">Ver proyecto</a>
 </div>
 
 </div>
