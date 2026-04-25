@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propuesta 3</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta 3</title>
+
 <style>
 body {
-margin: 0;
-overflow: hidden;
-font-family: Arial, sans-serif;
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
 }
 
 #info { 
@@ -25,125 +26,115 @@ font-family: Arial, sans-serif;
     box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     border: 1px solid rgba(255,255,255,0.1);
 }
-#info h2{
-    font-size: 16px;
-    margin: 0 0 10px 0;
-    color: #61dafb;
-}
-#info p{
-    margin: 8px 0;
-}
-#info .controls{
-    line-height: 1.6;
-}
-#info .footer{
-    margin-top: 10px;
-    font-size: 12px;
-    opacity: 0.8;
-}
 </style>
-
 </head>
-<body>
-<!-- intrucciones para el usuario -->
-<div id="info">
-    <strong>Manipulación interactiva de transformaciones 3D en JavaScript</strong>
-    <p><strong>Controles:</strong></p>
-    FLECHAS ⬆️⬇️⬅️➡️: Mover el cubo<br>
-    Q / E: Rotar el cubo<br>
-    Z / X: Escalar el cubo<br><br>
-    <p><strong>Realizado por:</strong> Jhojan Rodolfo Aragón Suni</p>
-</div>
-<!-- importamos Three.js -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<!-- EJERCICIO DE TRASLACIÓN, ROTACIÓN Y ESCALADO -->
-<script>
-    // CREAR LA ESCENA
-    const scene = new THREE.Scene();
-    // crear el fondo de la escena
-    scene.background = new THREE.Color(0x20232a);
-    // CREAR UNA CAMARA
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-// CREAR UN RENDERIZADOR
+<body>
+
+<div id="info">
+    <strong>Manipulación interactiva 3D</strong><br><br>
+    FLECHAS: Mover<br>
+    Q / E: Rotar<br>
+    Z / X: Escalar<br><br>
+    <strong>Autor:</strong> Jhojan Aragón
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+// ESCENA
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x20232a);
+
+// CÁMARA
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+// RENDER
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-// CREAR EL OBJETO 3D
+
+// CUBO
 const geometry = new THREE.BoxGeometry(1,1,1);
 const material = new THREE.MeshNormalMaterial();
 const cubo = new THREE.Mesh(geometry, material);
 scene.add(cubo);
-// agregar la luz
 
-// agregar una luz direccional para mejorar la apariencia del cubo
+// LUZ
 const light = new THREE.PointLight(0xffffff, 1);
-light.position.set(5, 5, 5);
+light.position.set(5,5,5);
 scene.add(light);
 
-// POSICIONAR LA CAMARA
-camera.position.z = 5;
-// variables para controlar la dirección del movimiento mediante teclado
+// 🔒 LIMITES (para que no salga de pantalla)
+const limites = {
+    x: 3,
+    y: 2
+};
+
+// CONTROLES
 window.addEventListener('keydown', (event) => {
     switch(event.key) {
-        
-        //traslación 
+
+        // TRASLACIÓN CON LÍMITES
         case 'ArrowUp':
-            cubo.position.y += 0.2; // mover hacia arriba
+            cubo.position.y = Math.min(limites.y, cubo.position.y + 0.2);
             break;
+
         case 'ArrowDown':
-            cubo.position.y -= 0.2; // mover hacia abajo
+            cubo.position.y = Math.max(-limites.y, cubo.position.y - 0.2);
             break;
+
         case 'ArrowLeft':
-            cubo.position.x -= 0.2; // mover hacia la izquierda
+            cubo.position.x = Math.max(-limites.x, cubo.position.x - 0.2);
             break;
+
         case 'ArrowRight':
-            cubo.position.x += 0.2; // mover hacia la derecha
+            cubo.position.x = Math.min(limites.x, cubo.position.x + 0.2);
             break;
-            // ROTACIÓN Y ESCALADO
+
+        // ROTACIÓN
         case 'q':
         case 'Q':
-            cubo.rotation.y -= 0.1; // rotar a la izquierda
+            cubo.rotation.y -= 0.1;
             break;
+
         case 'e':
         case 'E':
-            cubo.rotation.y += 0.1; // rotar a la derecha
+            cubo.rotation.y += 0.1;
             break;
-        // ESCALADO
-        
-            case 'z':
-                case 'Z':
-            cubo.scale.x +=0.1;
-            cubo.scale.y +=0.1;
-            cubo.scale.z +=0.1;
-                       
-            // escalar hacia arriba
-            // para evitar que el cubo se vuelva demasiado pequeño, se puede agregar una condición para limitar el escalado hacia abajo
+
+        // ESCALADO CON LÍMITES
+        case 'z':
+        case 'Z':
+            cubo.scale.x = Math.min(2, cubo.scale.x + 0.1);
+            cubo.scale.y = Math.min(2, cubo.scale.y + 0.1);
+            cubo.scale.z = Math.min(2, cubo.scale.z + 0.1);
             break;
+
         case 'x':
-            cubo.scale.x = Math.max(0.2, cubo.scale.x  - 0.1); // limitar el escalado hacia abajo
-            cubo.scale.y = Math.max(0.2, cubo.scale.y  - 0.1);
-            cubo.scale.z = Math.max(0.2, cubo.scale.z  - 0.1); // escalar hacia abajo
+        case 'X':
+            cubo.scale.x = Math.max(0.2, cubo.scale.x - 0.1);
+            cubo.scale.y = Math.max(0.2, cubo.scale.y - 0.1);
+            cubo.scale.z = Math.max(0.2, cubo.scale.z - 0.1);
             break;
     }
 });
+
+// ANIMACIÓN
 function animate() {
     requestAnimationFrame(animate);
-    // DIBUJAR LA ESCENA
     renderer.render(scene, camera);
 }
+animate();
 
-    animate();
-
-// AJUSTE RESPONSIVO
-
+// RESPONSIVE
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 </script>
-
 
 </body>
 </html>
