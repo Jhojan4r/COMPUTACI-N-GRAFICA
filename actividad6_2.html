@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mallas Poligonales Pro</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#020617,#0f172a);
+    color:white;
+    height:100vh;
+}
+
+/* CONTENEDOR */
+.container{
+    display:flex;
+    height:100%;
+}
+
+/* IZQUIERDA */
+.left{
+    width:50%;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+
+h2{
+    text-align:center;
+    color:#38bdf8;
+}
+
+/* CONTROLES */
+.controls{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(10px);
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+}
+
+.control-group{
+    margin-bottom:12px;
+}
+
+label{
+    font-size:13px;
+    display:flex;
+    justify-content:space-between;
+}
+
+input[type="range"]{
+    width:100%;
+    accent-color:#38bdf8;
+}
+
+/* CANVAS */
+.canvas-container{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+canvas{
+    border-radius:15px;
+    background:#000;
+    border:2px solid #38bdf8;
+    box-shadow:0 0 20px rgba(56,189,248,0.3);
+}
+
+/* DERECHA */
+.right{
+    width:50%;
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+}
+
+/* PDF */
+.pdf-header{
+    background:#020617;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:10px;
+    text-align:center;
+    color:#38bdf8;
+}
+
+.pdf-viewer{
+    flex:1;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+
+.pdf-viewer object{
+    width:100%;
+    height:100%;
+}
+
+/* INFO */
+.info{
+    margin-top:10px;
+    text-align:center;
+    font-size:14px;
+    color:#22c55e;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- IZQUIERDA -->
+<div class="left">
+
+<h2>Mallas Poligonales</h2>
+
+<div class="controls">
+
+<div class="control-group">
+<label>Tamaño <span id="vSize"></span></label>
+<input type="range" id="size" min="50" max="200" value="100">
+</div>
+
+<div class="control-group">
+<label>Rotación <span id="vAngle"></span></label>
+<input type="range" id="angle" min="0" max="360" value="0">
+</div>
+
+<div class="control-group">
+<label>Densidad Grid <span id="vGrid"></span></label>
+<input type="range" id="grid" min="20" max="100" value="40">
+</div>
+
+<div class="info">
+Representación: Wireframe (Malla de aristas)
+</div>
+
+</div>
+
+<div class="canvas-container">
+<canvas id="canvas" width="600" height="400"></canvas>
+</div>
+
+</div>
+
+<!-- DERECHA -->
+<div class="right">
+
+<div class="pdf-header">
+📄 Informe de Mallas Poligonales
+</div>
+
+<div class="pdf-viewer">
+<object data="documento_2.pdf" type="application/pdf">
+<p>No se pudo mostrar el PDF.
+<a href="documento_2.pdf" target="_blank">Abrir PDF</a></p>
+</object>
+</div>
+
+</div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+/* GRID */
+function drawGrid(){
+    const grid = parseInt(gridInput.value);
+
+    ctx.strokeStyle="#1e293b";
+
+    for(let i=0;i<600;i+=grid){
+        ctx.beginPath();
+        ctx.moveTo(i,0);
+        ctx.lineTo(i,400);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0,i);
+        ctx.lineTo(600,i);
+        ctx.stroke();
+    }
+}
+
+/* VALORES */
+function actualizarValores(){
+    vSize.innerText = sizeInput.value;
+    vAngle.innerText = angleInput.value + "°";
+    vGrid.innerText = gridInput.value;
+}
+
+/* CUBO */
+function drawCube(){
+    const size = parseInt(sizeInput.value);
+    const angle = parseFloat(angleInput.value) * Math.PI/180;
+
+    const cx = 300;
+    const cy = 200;
+
+    function rotate(x,y){
+        return {
+            x: x*Math.cos(angle) - y*Math.sin(angle),
+            y: x*Math.sin(angle) + y*Math.cos(angle)
+        }
+    }
+
+    let points = [
+        {x:-size,y:-size},
+        {x:size,y:-size},
+        {x:size,y:size},
+        {x:-size,y:size}
+    ];
+
+    let front = points.map(p=>{
+        let r = rotate(p.x,p.y);
+        return {x: cx+r.x, y: cy+r.y};
+    });
+
+    let back = front.map(p=>({x:p.x+60,y:p.y-60}));
+
+    ctx.strokeStyle="#38bdf8";
+    ctx.lineWidth=2;
+
+    for(let i=0;i<4;i++){
+        ctx.beginPath();
+        ctx.moveTo(front[i].x,front[i].y);
+        ctx.lineTo(front[(i+1)%4].x,front[(i+1)%4].y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(back[i].x,back[i].y);
+        ctx.lineTo(back[(i+1)%4].x,back[(i+1)%4].y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(front[i].x,front[i].y);
+        ctx.lineTo(back[i].x,back[i].y);
+        ctx.stroke();
+    }
+}
+
+/* ANIMACIÓN */
+function animate(){
+    ctx.clearRect(0,0,600,400);
+    drawGrid();
+    drawCube();
+    actualizarValores();
+    requestAnimationFrame(animate);
+}
+
+const sizeInput=document.getElementById("size");
+const angleInput=document.getElementById("angle");
+const gridInput=document.getElementById("grid");
+
+animate();
+</script>
+
+</body>
+</html>

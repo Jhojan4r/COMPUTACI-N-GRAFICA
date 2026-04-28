@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Curvas Paramétricas Pro</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    height:100vh;
+}
+
+.container{
+    display:flex;
+    width:100%;
+}
+
+/* IZQUIERDA */
+.left{
+    width:50%;
+    padding:20px;
+}
+
+.controls{
+    background:#020617;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.5);
+}
+
+.control-group{
+    margin-bottom:10px;
+}
+
+label{
+    font-size:14px;
+}
+
+input, select{
+    width:100%;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    border-radius:10px;
+    background:#000;
+    border:2px solid #22c55e;
+}
+
+/* DERECHA */
+.right{
+    width:50%;
+    background:#020617;
+    padding:10px;
+    display:flex;
+}
+
+iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    border-radius:10px;
+}
+
+/* TEXTO */
+.ecuacion{
+    margin-top:10px;
+    font-size:14px;
+    color:#38bdf8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- IZQUIERDA -->
+<div class="left">
+
+<h2>Curvas Paramétricas</h2>
+
+<div class="controls">
+
+<div class="control-group">
+<label>Velocidad: <span id="vSpeed"></span></label>
+<input type="range" id="speed" min="0.01" max="0.2" step="0.01" value="0.05">
+</div>
+
+<div class="control-group">
+<label>Escala X: <span id="vScaleX"></span></label>
+<input type="range" id="scaleX" min="50" max="200" value="150">
+</div>
+
+<div class="control-group">
+<label>Escala Y: <span id="vScaleY"></span></label>
+<input type="range" id="scaleY" min="50" max="200" value="150">
+</div>
+
+<div class="control-group">
+<label>Frecuencia X: <span id="vFreqX"></span></label>
+<input type="range" id="freqX" min="1" max="10" value="3">
+</div>
+
+<div class="control-group">
+<label>Frecuencia Y: <span id="vFreqY"></span></label>
+<input type="range" id="freqY" min="1" max="10" value="4">
+</div>
+
+<div class="control-group">
+<label>Tipo</label>
+<select id="type">
+<option value="circle">Círculo</option>
+<option value="spiral">Espiral</option>
+<option value="lissajous">Lissajous</option>
+</select>
+</div>
+
+<div class="ecuacion" id="ecuacion"></div>
+
+</div>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+</div>
+
+<!-- DERECHA (PDF AUTOMÁTICO) -->
+<div class="right">
+    <object data="documento_1.pdf" type="application/pdf" width="100%" height="100%">
+        <p>No se pudo mostrar el PDF. 
+        <a href="documento_1.pdf" target="_blank">Abrir PDF</a></p>
+    </object>
+</div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let t = 0;
+
+/* GRID */
+function drawGrid(){
+    ctx.strokeStyle="#1e293b";
+    for(let i=0;i<600;i+=40){
+        ctx.beginPath();
+        ctx.moveTo(i,0);
+        ctx.lineTo(i,400);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0,i);
+        ctx.lineTo(600,i);
+        ctx.stroke();
+    }
+}
+
+/* VALORES */
+function actualizarValores(){
+    vSpeed.innerText = speed.value;
+    vScaleX.innerText = scaleX.value;
+    vScaleY.innerText = scaleY.value;
+    vFreqX.innerText = freqX.value;
+    vFreqY.innerText = freqY.value;
+}
+
+/* ECUACIÓN */
+function actualizarEcuacion(type){
+    let eq="";
+    if(type==="circle"){
+        eq="x = a·cos(t), y = b·sin(t)";
+    }
+    if(type==="spiral"){
+        eq="x = t·cos(t), y = t·sin(t)";
+    }
+    if(type==="lissajous"){
+        eq="x = sin(at), y = sin(bt)";
+    }
+    document.getElementById("ecuacion").innerText=eq;
+}
+
+/* CURVA */
+function drawCurve(){
+    const speed=parseFloat(speedInput.value);
+    const scaleX=parseFloat(scaleXInput.value);
+    const scaleY=parseFloat(scaleYInput.value);
+    const freqX=parseFloat(freqXInput.value);
+    const freqY=parseFloat(freqYInput.value);
+    const type=typeInput.value;
+
+    ctx.beginPath();
+
+    for(let i=0;i<600;i++){
+        let tt=i*0.02;
+        let x,y;
+
+        if(type==="circle"){
+            x=300+scaleX*Math.cos(tt+t);
+            y=200+scaleY*Math.sin(tt+t);
+        }
+
+        if(type==="spiral"){
+            let r=tt*5;
+            x=300+r*Math.cos(tt+t)*(scaleX/100);
+            y=200+r*Math.sin(tt+t)*(scaleY/100);
+        }
+
+        if(type==="lissajous"){
+            x=300+scaleX*Math.sin(freqX*(tt+t));
+            y=200+scaleY*Math.sin(freqY*(tt+t));
+        }
+
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+    }
+
+    ctx.strokeStyle="#22c55e";
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    t+=speed;
+
+    actualizarEcuacion(type);
+}
+
+/* ANIMACIÓN */
+function animate(){
+    ctx.clearRect(0,0,600,400);
+    drawGrid();
+    drawCurve();
+    actualizarValores();
+    requestAnimationFrame(animate);
+}
+
+const speedInput=document.getElementById("speed");
+const scaleXInput=document.getElementById("scaleX");
+const scaleYInput=document.getElementById("scaleY");
+const freqXInput=document.getElementById("freqX");
+const freqYInput=document.getElementById("freqY");
+const typeInput=document.getElementById("type");
+
+animate();
+</script>
+
+</body>
+</html>
