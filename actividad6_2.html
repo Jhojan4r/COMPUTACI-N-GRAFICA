@@ -2,21 +2,91 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Mallas Poligonales Pro</title>
-
+<title>Mallas Poligonales</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 body{
     margin:0;
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#020617,#0f172a);
+    font-family:'Inter', sans-serif;
+    background:linear-gradient(135deg,#020617,#020617,#0f172a);
     color:white;
     height:100vh;
+    overflow:hidden;
+}
+
+/* TITULO MÁS PRO */
+h2{
+    text-align:center;
+    color:#38bdf8;
+    font-family:'Orbitron', sans-serif;
+    letter-spacing:2px;
+    text-shadow:0 0 15px rgba(56,189,248,0.6);
+}
+
+/* ECUACIÓN BONITA */
+.ecuacion{
+    margin-top:10px;
+    padding:10px;
+    text-align:center;
+    font-family:'Orbitron', sans-serif;
+    color:#22c55e;
+    background:rgba(34,197,94,0.08);
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(34,197,94,0.3);
+}
+
+/* SELECT MODERNO */
+select{
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:none;
+    background:#1e293b;
+    color:white;
+    outline:none;
+    cursor:pointer;
+}
+
+.back-btn{
+    position:fixed; /* 🔥 clave: que no dependa del contenedor */
+    top:20px;
+    left:20px;
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 0 15px rgba(56,189,248,0.5);
+    transition:0.3s;
+    z-index:9999; /* 🔥 súper importante */
+}
+
+.back-btn:hover{
+    transform:scale(1.1);
+    box-shadow:0 0 25px rgba(56,189,248,0.8);
 }
 
 /* CONTENEDOR */
 .container{
     display:flex;
     height:100%;
+    gap:10px;
+    padding:10px;
+}
+
+/* PANEL BASE */
+.left, .right{
+    border-radius:20px;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(15px);
+    box-shadow:0 20px 40px rgba(0,0,0,0.6);
+    transition:0.3s;
+}
+
+.left:hover, .right:hover{
+    transform:scale(1.005);
 }
 
 /* IZQUIERDA */
@@ -27,34 +97,62 @@ body{
     flex-direction:column;
 }
 
+/* TITULO */
 h2{
     text-align:center;
     color:#38bdf8;
+    margin-bottom:10px;
+    letter-spacing:1px;
+    text-shadow:0 0 10px rgba(56,189,248,0.5);
 }
 
 /* CONTROLES */
 .controls{
     background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
     padding:15px;
     border-radius:15px;
     margin-bottom:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+    box-shadow:inset 0 0 15px rgba(255,255,255,0.05);
 }
 
+/* GRUPOS */
 .control-group{
-    margin-bottom:12px;
+    margin-bottom:15px;
 }
 
+/* LABEL */
 label{
     font-size:13px;
     display:flex;
     justify-content:space-between;
+    margin-bottom:5px;
+    color:#cbd5f5;
 }
 
+/* SLIDER */
 input[type="range"]{
     width:100%;
-    accent-color:#38bdf8;
+    appearance:none;
+    height:6px;
+    border-radius:10px;
+    background:#1e293b;
+    outline:none;
+}
+
+/* TRACK */
+input[type="range"]::-webkit-slider-thumb{
+    appearance:none;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#38bdf8;
+    cursor:pointer;
+    box-shadow:0 0 10px #38bdf8;
+    transition:0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover{
+    transform:scale(1.2);
 }
 
 /* CANVAS */
@@ -67,9 +165,18 @@ input[type="range"]{
 
 canvas{
     border-radius:15px;
-    background:#000;
-    border:2px solid #38bdf8;
-    box-shadow:0 0 20px rgba(56,189,248,0.3);
+    background:#020617;
+    border:2px solid rgba(56,189,248,0.5);
+    box-shadow:
+        0 0 20px rgba(56,189,248,0.3),
+        inset 0 0 30px rgba(0,0,0,0.8);
+    transition:0.3s;
+}
+
+canvas:hover{
+    box-shadow:
+        0 0 30px rgba(56,189,248,0.6),
+        inset 0 0 40px rgba(0,0,0,1);
 }
 
 /* DERECHA */
@@ -80,26 +187,26 @@ canvas{
     flex-direction:column;
 }
 
-/* PDF */
+/* HEADER PDF */
 .pdf-header{
-    background:#020617;
-    padding:10px;
-    border-radius:10px;
+    background:linear-gradient(90deg,#020617,#0f172a);
+    padding:12px;
+    border-radius:12px;
     margin-bottom:10px;
     text-align:center;
     color:#38bdf8;
+    font-weight:bold;
+    letter-spacing:1px;
+    box-shadow:0 0 15px rgba(56,189,248,0.3);
 }
 
+/* PDF */
 .pdf-viewer{
     flex:1;
-    border-radius:10px;
+    border-radius:15px;
     overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);
-}
-
-.pdf-viewer object{
-    width:100%;
-    height:100%;
+    box-shadow:0 20px 40px rgba(0,0,0,0.7);
+    border:1px solid rgba(255,255,255,0.05);
 }
 
 /* INFO */
@@ -108,11 +215,16 @@ canvas{
     text-align:center;
     font-size:14px;
     color:#22c55e;
+    padding:8px;
+    border-radius:10px;
+    background:rgba(34,197,94,0.08);
+    box-shadow:0 0 10px rgba(34,197,94,0.2);
 }
 </style>
 </head>
 
 <body>
+<button class="back-btn" onclick="volverInicio()">← Inicio</button>
 
 <div class="container">
 
@@ -152,10 +264,6 @@ Representación: Wireframe (Malla de aristas)
 
 <!-- DERECHA -->
 <div class="right">
-
-<div class="pdf-header">
-📄 Informe de Mallas Poligonales
-</div>
 
 <div class="pdf-viewer">
 <object data="documento_2.pdf" type="application/pdf">
@@ -255,6 +363,10 @@ function animate(){
     drawCube();
     actualizarValores();
     requestAnimationFrame(animate);
+}
+
+function volverInicio(){
+    window.location.href = "index.html";
 }
 
 const sizeInput=document.getElementById("size");
