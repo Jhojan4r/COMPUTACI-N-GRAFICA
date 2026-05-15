@@ -1,721 +1,324 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>Modelado Geométrico Avanzado</title>
-
-<style>
-    *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
-    }
-
-    body{
-        overflow:hidden;
-        font-family:'Segoe UI',sans-serif;
-        background:#020611;
-    }
-
-    canvas{
-        display:block;
-    }
-
-    /* =========================
-       PANEL SUPERIOR
-    ========================== */
-    .info-panel{
-        position:fixed;
-        top:15px;
-        left:15px;
-        max-width:420px;
-        background:rgba(10,10,20,0.72);
-        backdrop-filter:blur(12px);
-        border-radius:18px;
-        padding:14px 22px;
-        color:white;
-        z-index:20;
-        border-left:4px solid #ff7e5e;
-        box-shadow:0 10px 35px rgba(0,0,0,.35);
-    }
-
-    .info-panel h1{
-        font-size:1.4rem;
-        margin-bottom:6px;
-    }
-
-    .info-panel span{
-        color:#ffb347;
-    }
-
-    .info-panel p{
-        opacity:.85;
-        font-size:.82rem;
-        line-height:1.5;
-    }
-
-    /* =========================
-       CONTROLES
-    ========================== */
-    .controls-hint{
-        position:fixed;
-        bottom:15px;
-        left:15px;
-        background:rgba(0,0,0,.45);
-        backdrop-filter:blur(6px);
-        border-radius:12px;
-        padding:8px 12px;
-        z-index:20;
-        color:#ddd;
-        font-size:.75rem;
-    }
-
-    /* =========================
-       BOTON
-    ========================== */
-    .tech-btn{
-        position:fixed;
-        right:15px;
-        bottom:15px;
-        z-index:30;
-
-        border:none;
-        cursor:pointer;
-
-        padding:10px 18px;
-        border-radius:40px;
-
-        background:rgba(20,20,35,.85);
-        color:white;
-
-        backdrop-filter:blur(8px);
-
-        font-weight:bold;
-        transition:.25s;
-
-        border:1px solid rgba(255,255,255,.15);
-    }
-
-    .tech-btn:hover{
-        background:#ff7e5e;
-        transform:translateY(-2px);
-    }
-
-    /* =========================
-       EXPLICACION
-    ========================== */
-    .explanation{
-        position:fixed;
-        right:15px;
-        bottom:75px;
-
-        width:300px;
-        max-height:60vh;
-
-        overflow-y:auto;
-
-        background:rgba(0,0,0,.82);
-
-        backdrop-filter:blur(12px);
-
-        border-radius:20px;
-
-        padding:16px;
-
-        color:#f0f0f0;
-
-        z-index:25;
-
-        border-right:3px solid #ff7e5e;
-
-        transition:
-            opacity .35s ease,
-            transform .35s ease,
-            visibility .35s;
-    }
-
-    .explanation h3{
-        margin-bottom:10px;
-        color:#ffb347;
-    }
-
-    .explanation p{
-        margin:7px 0;
-        line-height:1.5;
-        font-size:.78rem;
-    }
-
-    .hidden{
-        opacity:0;
-        visibility:hidden;
-        transform:translateY(20px);
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================== */
-    @media(max-width:768px){
-
-        .info-panel{
-            width:calc(100% - 20px);
-            max-width:unset;
-            left:10px;
-            top:10px;
-            padding:10px 14px;
+    <!-- Define la codificación de caracteres para permitir eñes y acentos -->
+    <meta charset="UTF-8">
+    <!-- Optimiza la visualización en móviles y bloquea el zoom táctil innecesario -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!-- Título de la pestaña del navegador -->
+    <title>Laboratorio de Modelado Geométrico 3D</title>
+    <style>
+        /* Definición de variables globales para los colores del proyecto */
+        :root {
+            --primary: #ff7e5e;
+            --secondary: #ffb347;
+            --bg-dark: #050b1a;
+            --panel-bg: rgba(10, 15, 30, 0.85);
         }
 
-        .info-panel h1{
-            font-size:1rem;
+        /* Reseteo de márgenes y eliminación de barras de scroll en la pantalla */
+        body { margin: 0; overflow: hidden; background: var(--bg-dark); font-family: 'Inter', sans-serif; }
+        
+        /* Panel Superior: Posicionamiento absoluto de la identificación del Proyecto */
+        .header-ui {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            color: white;
+            z-index: 100; /* Asegura que se dibuje por encima del lienzo 3D */
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
         }
 
-        .info-panel p{
-            font-size:.72rem;
+        /* Estilos del texto del título principal */
+        .header-ui h1 { margin: 0; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; }
+        .header-ui span { color: var(--secondary); }
+
+        /* Panel Lateral: Contenedor con efecto de desenfoque de fondo (Glassmorphism) */
+        .model-specs {
+            position: absolute;
+            top: 100px;
+            left: 25px;
+            width: 280px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px); /* Desenfoque del fondo */
+            border-radius: 12px;
+            padding: 20px;
+            color: #e0e0e0;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .controls-hint{
-            display:none;
+        /* Título del panel de especificaciones */
+        .model-specs h2 { font-size: 0.9rem; color: var(--secondary); margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 8px; }
+        /* Alineación y espaciado de los ítems de la lista */
+        .spec-item { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+        .spec-item b { color: var(--primary); display: block; }
+
+        /* Etiquetas de texto HTML que flotarán dentro del espacio 3D */
+        .label3d {
+            color: white;
+            font-family: monospace;
+            padding: 4px 10px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 12px;
+            pointer-events: none; /* Evita que el texto bloquee los clics del ratón */
         }
 
-        .tech-btn{
-            bottom:12px;
-            right:12px;
-            font-size:.72rem;
-            padding:8px 12px;
-        }
-
-        .explanation{
-            width:calc(100% - 20px);
-            left:10px;
-            right:10px;
-            bottom:65px;
-            font-size:.72rem;
-        }
-    }
-</style>
+        /* Diseño responsivo: oculta el panel lateral si la pantalla es muy pequeña */
+        @media (max-width: 768px) { .model-specs { display: none; } }
+    </style>
 </head>
-
 <body>
 
-<div class="info-panel">
-    <h1>✨ <span>Modelado Geométrico</span> Avanzado</h1>
-    <p>
-        Primitivas 3D • Superficies Paramétricas • Fractales • Transformaciones
-    </p>
+<!-- Interfaz de usuario: Título del laboratorio -->
+<div class="header-ui">
+    <h1>Modelado <span>Geométrico</span></h1>
+    <p style="font-size: 0.7rem; opacity: 0.7;">Visualizador de Topologías Avanzadas</p>
 </div>
 
-<div class="controls-hint">
-    🖱️ Arrastra para rotar | Scroll para zoom
+<!-- Interfaz de usuario: Panel informativo con la descripción de los componentes -->
+<div class="model-specs">
+    <h2>COMPONENTES DEL MODELO</h2>
+    <div class="spec-item">
+        <span>01</span>
+        <div><b>Primitivas CSG</b> Esferas y Toros definidos por parámetros radiales puros.</div>
+    </div>
+    <div class="spec-item">
+        <span>02</span>
+        <div><b>Mallas Paramétricas</b> Superficies generadas mediante funciones f(u, v) continuas.</div>
+    </div>
+    <div class="spec-item">
+        <span>03</span>
+        <div><b>Fractales L-System</b> Geometría recursiva basada en autosimilaridad.</div>
+    </div>
 </div>
 
-<button id="toggleTech" class="tech-btn">
-    📐 Conceptos clave
-</button>
-
-<div id="explanationBox" class="explanation">
-    <h3>🧠 ¿Qué estás viendo?</h3>
-
-    <p>✅ Esfera, toro y cilindro como primitivas geométricas.</p>
-
-    <p>✅ Superficie paramétrica tipo NURBS generada matemáticamente.</p>
-
-    <p>✅ Fractal de Sierpinski con geometría recursiva.</p>
-
-    <p>✅ Transformaciones 3D: escala, rotación y traslación.</p>
-
-    <p>✅ Iluminación dinámica y materiales metálicos.</p>
-
-    <p>
-        El modelado geométrico permite representar objetos complejos mediante
-        matemáticas, primitivas y superficies avanzadas.
-    </p>
-</div>
-
+<!-- Importación estructurada de librerías mediante mapas de JavaScript moderno -->
 <script type="importmap">
-{
-    "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.152.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.152.0/examples/jsm/"
+        }
     }
-}
 </script>
 
 <script type="module">
-
-import * as THREE from 'three';
-
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-import {
-    CSS2DRenderer,
-    CSS2DObject
-} from 'three/addons/renderers/CSS2DRenderer.js';
-
-/* =========================
-   ESCENA
-========================= */
-
-const scene = new THREE.Scene();
-
-scene.background = new THREE.Color(0x020611);
-
-scene.fog = new THREE.FogExp2(0x020611,0.012);
-
-/* =========================
-   CAMARA
-========================= */
-
-const camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-
-camera.position.set(5,4,8);
-
-/* =========================
-   RENDERER
-========================= */
-
-const renderer = new THREE.WebGLRenderer({
-    antialias:true
-});
-
-renderer.setSize(window.innerWidth,window.innerHeight);
-
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio,2)
-);
-
-renderer.shadowMap.enabled = true;
-
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-renderer.domElement.style.position = 'fixed';
-renderer.domElement.style.top = '0';
-renderer.domElement.style.left = '0';
-
-document.body.appendChild(renderer.domElement);
-
-/* =========================
-   LABEL RENDERER
-========================= */
-
-const labelRenderer = new CSS2DRenderer();
-
-labelRenderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-labelRenderer.domElement.style.position = 'fixed';
-
-labelRenderer.domElement.style.top = '0';
-
-labelRenderer.domElement.style.left = '0';
-
-labelRenderer.domElement.style.pointerEvents = 'none';
-
-labelRenderer.domElement.style.zIndex = '15';
-
-document.body.appendChild(labelRenderer.domElement);
-
-/* =========================
-   CONTROLES
-========================= */
-
-const controls = new OrbitControls(
-    camera,
-    renderer.domElement
-);
-
-controls.enableDamping = true;
-
-/* =========================
-   LUCES
-========================= */
-
-const ambient = new THREE.AmbientLight(
-    0x404060,
-    1
-);
-
-scene.add(ambient);
-
-const dirLight = new THREE.DirectionalLight(
-    0xfff5e6,
-    1.3
-);
-
-dirLight.position.set(3,5,2);
-
-dirLight.castShadow = true;
-
-scene.add(dirLight);
-
-const movingLight = new THREE.PointLight(
-    0xff8866,
-    1.2
-);
-
-movingLight.position.set(2,3,2);
-
-scene.add(movingLight);
-
-/* glow */
-
-const glowSphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.12,16,16),
-    new THREE.MeshBasicMaterial({
-        color:0xffaa66,
-        transparent:true,
-        opacity:.9
-    })
-);
-
-movingLight.add(glowSphere);
-
-/* =========================
-   ESTRELLAS
-========================= */
-
-const starGeometry = new THREE.BufferGeometry();
-
-const starCount = 1200;
-
-const starPositions = new Float32Array(starCount * 3);
-
-for(let i=0;i<starCount;i++){
-
-    starPositions[i*3] =
-        (Math.random()-0.5)*200;
-
-    starPositions[i*3+1] =
-        (Math.random()-0.5)*80;
-
-    starPositions[i*3+2] =
-        (Math.random()-0.5)*100;
-}
-
-starGeometry.setAttribute(
-    'position',
-    new THREE.BufferAttribute(starPositions,3)
-);
-
-const stars = new THREE.Points(
-    starGeometry,
-    new THREE.PointsMaterial({
-        color:0xffffff,
-        size:0.08,
-        transparent:true,
-        opacity:0.6
-    })
-);
-
-scene.add(stars);
-
-/* =========================
-   MATERIALES
-========================= */
-
-const sphereMat = new THREE.MeshStandardMaterial({
-    color:0x3a86ff,
-    metalness:0.85,
-    roughness:0.15
-});
-
-const torusMat = new THREE.MeshStandardMaterial({
-    color:0xef476f,
-    metalness:0.9,
-    roughness:0.25
-});
-
-const cylinderMat = new THREE.MeshStandardMaterial({
-    color:0x06d6a0,
-    metalness:0.7,
-    roughness:0.35
-});
-
-const surfaceMat = new THREE.MeshPhysicalMaterial({
-    color:0xca6eff,
-    metalness:0.75,
-    roughness:0.25,
-    clearcoat:1,
-    clearcoatRoughness:0.1
-});
-
-/* =========================
-   ESFERA
-========================= */
-
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.85,64,64),
-    sphereMat
-);
-
-sphere.position.set(-2,0,1);
-
-sphere.castShadow = true;
-
-scene.add(sphere);
-
-/* =========================
-   TORO
-========================= */
-
-const torus = new THREE.Mesh(
-    new THREE.TorusGeometry(0.9,0.28,64,128),
-    torusMat
-);
-
-torus.position.set(2,0,1);
-
-torus.rotation.x = Math.PI / 2;
-
-scene.add(torus);
-
-/* =========================
-   CILINDRO
-========================= */
-
-const cylinder = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.65,0.65,1.2,48),
-    cylinderMat
-);
-
-cylinder.position.set(-1.5,-0.4,-2);
-
-scene.add(cylinder);
-
-/* =========================
-   SUPERFICIE PARAMETRICA
-========================= */
-
-const geo = new THREE.PlaneGeometry(
-    2.6,
-    2.6,
-    60,
-    60
-);
-
-const pos = geo.attributes.position;
-
-for(let i=0;i<pos.count;i++){
-
-    const x = pos.getX(i);
-
-    const y = pos.getY(i);
-
-    const z =
-        Math.sin(x*2) *
-        Math.cos(y*2) *
-        0.5;
-
-    pos.setZ(i,z);
-}
-
-geo.computeVertexNormals();
-
-const surface = new THREE.Mesh(
-    geo,
-    surfaceMat
-);
-
-surface.rotation.x = -Math.PI / 2;
-
-surface.position.set(2,-0.5,-2);
-
-scene.add(surface);
-
-/* =========================
-   FRACTAL SIMPLE
-========================= */
-
-const fractalGroup = new THREE.Group();
-
-fractalGroup.position.set(0,-0.3,-3);
-
-scene.add(fractalGroup);
-
-for(let i=0;i<10;i++){
-
-    const tetra = new THREE.Mesh(
-
-        new THREE.TetrahedronGeometry(
-            0.35
-        ),
-
-        new THREE.MeshStandardMaterial({
-            color:0xffaa55,
-            metalness:0.4,
-            roughness:0.5
-        })
+    // Importación del núcleo de Three.js y sus extensiones de control y renderizado de texto
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+    // --- CONFIGURACIÓN DEL MOTOR ---
+    // Instancia el contenedor general del mundo 3D (la escena)
+    const scene = new THREE.Scene();
+    // Color de fondo oscuro para el espacio
+    scene.background = new THREE.Color(0x050813);
+    // Agrega niebla para que los objetos lejanos se desvanezcan sutilmente entre los 5 y 25 metros
+    scene.fog = new THREE.Fog(0x050813, 5, 25);
+
+    // Configura la cámara de perspectiva (Ángulo de visión, Proporción, Límite mínimo, Límite máximo)
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // Posiciona la cámara en las coordenadas del espacio (X, Y, Z)
+    camera.position.set(8, 6, 12);
+
+    // Inicializa el renderizador WebGL encargado de dibujar los polígonos con suavizado de bordes
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Ajusta el lienzo al tamaño completo de la pantalla
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // Configura la densidad de píxeles según la pantalla para evitar que se vea borroso (pantallas Retina/4K)
+    renderer.setPixelRatio(window.devicePixelRatio);
+    // Activa el procesamiento de cálculo de sombras dinámicas
+    renderer.shadowMap.enabled = true;
+    // Agrega el lienzo de renderizado WebGL al cuerpo del documento HTML
+    document.body.appendChild(renderer.domElement);
+
+    // Inicializa el segundo renderizador exclusivo para colocar texto HTML sobre los objetos 3D
+    const labelRenderer = new CSS2DRenderer();
+    // Ajusta el lienzo de etiquetas al tamaño completo de la pantalla
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    // Superpone el lienzo transparente sobre el lienzo de los polígonos
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0px';
+    labelRenderer.domElement.style.pointerEvents = 'none'; // No interfiere con las acciones del mouse
+    // Agrega el lienzo de etiquetas al cuerpo del documento HTML
+    document.body.appendChild(labelRenderer.domElement);
+
+    // Configura los controles interactivos orbitales acoplados a la cámara
+    const controls = new OrbitControls(camera, renderer.domElement);
+    // Activa la inercia física para que la cámara no se detenga bruscamente al soltar el ratón
+    controls.enableDamping = true;
+
+    // --- ILUMINACIÓN TÉCNICA ---
+    // Crea una luz direccional blanca que simula la luz solar (Color, Intensidad)
+    const light1 = new THREE.DirectionalLight(0xffffff, 1);
+    // Posiciona la fuente de luz en el espacio
+    light1.position.set(5, 10, 7);
+    // Configura esta luz específica para generar sombras proyectadas
+    light1.castShadow = true;
+    // Añade la luz a la escena
+    scene.add(light1);
+
+    // Crea una luz puntual de color naranja (Color, Intensidad) para contrastes de color
+    const light2 = new THREE.PointLight(0xff7e5e, 1.5);
+    // La posiciona en el cuadrante trasero e inferior
+    light2.position.set(-5, 2, -5);
+    // Añade la luz puntual a la escena
+    scene.add(light2);
+
+    // Luz ambiental tenue de color azulado para rellenar las sombras oscuras absolutas
+    scene.add(new THREE.AmbientLight(0x202040));
+
+    // --- AYUDANTES VISUALES ---
+    // Crea una cuadrícula técnica en el suelo (Tamaño, Divisiones, Color central, Color de líneas)
+    const grid = new THREE.GridHelper(20, 20, 0x444466, 0x222233);
+    // Desplaza la cuadrícula hacia abajo en el eje Y para que sirva de piso
+    grid.position.y = -2;
+    // Añade la cuadrícula a la escena
+    scene.add(grid);
+
+    // --- CREACIÓN DE OBJETOS GEOMÉTRICOS ---
+
+    // 1. Esfera (Primitiva)
+    // Instancia una malla asociando una forma geométrica esférica y un material con propiedades metálicas y reflejos
+    const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 64, 64),
+        new THREE.MeshStandardMaterial({ color: 0x3498db, metalness: 0.7, roughness: 0.2 })
     );
+    // Ubica la esfera a la izquierda y adelante
+    sphere.position.set(-3, 0, 2);
+    // Hace que la esfera sea capaz de arrojar sombras sobre otros objetos
+    sphere.castShadow = true;
+    // Agrega la esfera al espacio 3D
+    scene.add(sphere);
+    // Ejecuta la función personalizada para ponerle su etiqueta de texto encima
+    addLabel(sphere, 'PRIMITIVA: ESFERA');
 
-    tetra.position.set(
-        Math.cos(i)*0.9,
-        Math.sin(i*2)*0.3,
-        Math.sin(i)*0.9
+    // 2. Toroide (Geometría de Revolución)
+    // Instancia una malla con forma de dona (Radio base, Grosor de tubo, Segmentos radiales, Segmentos tubulares)
+    const torus = new THREE.Mesh(
+        new THREE.TorusGeometry(0.8, 0.3, 32, 100),
+        new THREE.MeshStandardMaterial({ color: 0xe74c3c, metalness: 0.8, roughness: 0.3 })
     );
+    // Ubica el toroide a la derecha y adelante
+    torus.position.set(3, 0, 2);
+    // Rota el toroide 90 grados para que quede acostado horizontalmente
+    torus.rotation.x = Math.PI / 2;
+    // Hace que el toroide arroje sombras
+    torus.castShadow = true;
+    // Agrega el toroide al espacio 3D
+    scene.add(torus);
+    // Le asigna su etiqueta de texto correspondiente
+    addLabel(torus, 'REVOLUCIÓN: TORO');
 
-    fractalGroup.add(tetra);
-}
-
-/* =========================
-   FUNCION LABEL
-========================= */
-
-function createLabel(text,color,x,y,z){
-
-    const div = document.createElement('div');
-
-    div.textContent = text;
-
-    div.style.color = color;
-
-    div.style.fontWeight = 'bold';
-
-    div.style.fontSize = '13px';
-
-    div.style.padding = '4px 10px';
-
-    div.style.borderRadius = '30px';
-
-    div.style.background = 'rgba(0,0,0,.55)';
-
-    div.style.backdropFilter = 'blur(5px)';
-
-    div.style.whiteSpace = 'nowrap';
-
-    const label = new CSS2DObject(div);
-
-    label.position.set(x,y,z);
-
-    scene.add(label);
-}
-
-/* labels separados */
-
-createLabel(
-    '🔵 Esfera',
-    '#aaccff',
-    -2,
-    1.5,
-    1
-);
-
-createLabel(
-    '🔘 Toro',
-    '#ffb5a7',
-    2.3,
-    1.8,
-    1
-);
-
-createLabel(
-    '🧪 Cilindro',
-    '#a7f0d0',
-    -1.8,
-    1.2,
-    -2
-);
-
-createLabel(
-    '🌀 Superficie',
-    '#e2b0ff',
-    2.6,
-    1.5,
-    -2
-);
-
-createLabel(
-    '🔺 Fractal',
-    '#ffc285',
-    0,
-    1.7,
-    -3
-);
-
-/* =========================
-   ANIMACION
-========================= */
-
-let time = 0;
-
-function animate(){
-
-    requestAnimationFrame(animate);
-
-    const delta = 0.016;
-
-    time += delta;
-
-    torus.rotation.z =
-        Math.sin(time)*0.5;
-
-    cylinder.rotation.y += 0.01;
-
-    fractalGroup.rotation.y += 0.005;
-
-    sphere.rotation.y += 0.003;
-
-    stars.rotation.y += 0.0003;
-
-    movingLight.position.x =
-        Math.sin(time)*3;
-
-    movingLight.position.z =
-        Math.cos(time)*3;
-
-    controls.update();
-
-    renderer.render(scene,camera);
-
-    labelRenderer.render(scene,camera);
-}
-
-animate();
-
-/* =========================
-   BOTON
-========================= */
-
-const toggleBtn =
-    document.getElementById('toggleTech');
-
-const explanation =
-    document.getElementById('explanationBox');
-
-toggleBtn.addEventListener('click',()=>{
-
-    explanation.classList.toggle('hidden');
-});
-
-/* =========================
-   RESIZE
-========================= */
-
-window.addEventListener('resize',()=>{
-
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
+    // 3. Malla Paramétrica Personalizada (NURBS-Style)
+    // Función interna encargada de generar y calcular la deformación matemática de un plano plano
+    const createParametric = () => {
+        const size = 3;
+        const res = 50;
+        // Crea una malla plana subdividida en 50x50 partes
+        const geo = new THREE.PlaneGeometry(size, size, res, res);
+        // Obtiene el arreglo con todas las coordenadas (X, Y, Z) de los vértices
+        const pos = geo.attributes.position;
+        // Recorre uno a uno todos los puntos que componen el plano
+        for (let i = 0; i < pos.count; i++) {
+            const x = pos.getX(i);
+            const y = pos.getY(i);
+            // Fórmula trigonométrica combinada para alterar la altura (Eje Z) de cada punto en base a sus coordenadas X e Y
+            const z = 0.5 * Math.sin(x * 2.5) * Math.cos(y * 2.5);
+            // Aplica la nueva altura calculada al vértice correspondiente
+            pos.setZ(i, z);
+        }
+        // Recalcula cómo interactúa la luz con las nuevas curvas de la superficie para que los brillos se vean realistas
+        geo.computeVertexNormals();
+        return geo;
+    };
+    // Instancia la superficie asociando la malla matemática con un material púrpura visible por ambos lados
+    const surface = new THREE.Mesh(
+        createParametric(),
+        new THREE.MeshStandardMaterial({ color: 0x9b59b6, side: THREE.DoubleSide, wireframe: false, metalness: 0.6 })
     );
+    // Rota el plano modificado para situarlo de forma horizontal en el espacio
+    surface.rotation.x = -Math.PI / 2;
+    // Ubica la superficie en la zona trasera derecha
+    surface.position.set(3, -0.5, -3);
+    // Añade la superficie a la escena
+    scene.add(surface);
+    // Le asigna su etiqueta flotante
+    addLabel(surface, 'SUPERFICIE PARAMÉTRICA');
 
-    labelRenderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
+    // 4. Fractal Sierpinski (Simplificado para claridad)
+    // Instancia un grupo que servirá como contenedor de varias pirámides agrupadas
+    const fractalGroup = new THREE.Group();
+    // Función reutilizable para crear pirámides individuales (Tetraedros) en una escala y posición específica
+    const createTetra = (s, p) => {
+        const g = new THREE.TetrahedronGeometry(s);
+        const m = new THREE.MeshStandardMaterial({ color: 0xf1c40f });
+        const mesh = new THREE.Mesh(g, m);
+        mesh.position.copy(p); // Aplica el vector de posición recibido
+        fractalGroup.add(mesh); // Añade la pirámide directamente adentro del grupo contenedor
+    };
+    // Genera las 4 pirámides en posiciones estratégicas para armar la base de la pirámide fractal
+    createTetra(0.8, new THREE.Vector3(0, 0.8, 0));       // Pirámide Cúspide (arriba)
+    createTetra(0.8, new THREE.Vector3(0.7, -0.2, 0.5));  // Pirámide Inferior Derecha
+    createTetra(0.8, new THREE.Vector3(-0.7, -0.2, 0.5)); // Pirámide Inferior Izquierda
+    createTetra(0.8, new THREE.Vector3(0, -0.2, -0.7));   // Pirámide Inferior Trasera
+    
+    // Ubica todo el conjunto del fractal en la zona trasera izquierda
+    fractalGroup.position.set(-3, 0, -3);
+    // Agrega el grupo completo a la escena
+    scene.add(fractalGroup);
+    // Le asigna la etiqueta correspondiente al centro del grupo fractal
+    addLabel(fractalGroup, 'FRACTAL RECURSIVO');
 
+    // --- FUNCIONES DE APOYO ---
+    // Función para crear dinámicamente elementos HTML e incrustarlos en el plano 3D como texto
+    function addLabel(parent, text) {
+        const div = document.createElement('div'); // Crea un contenedor div en memoria
+        div.className = 'label3d';                  // Le asigna los estilos CSS creados arriba
+        div.textContent = text;                    // Le inserta el texto correspondiente
+        const label = new CSS2DObject(div);        // Transforma el div HTML en un objeto entendible en 3D
+        label.position.set(0, 1.5, 0);             // Coloca la etiqueta 1.5 metros por encima del centro de su objeto padre
+        parent.add(label);                         // Enlaza la etiqueta al objeto para que se mueva en conjunto con él
+    }
+
+    // Bucle infinito de animación ejecutado a la máxima velocidad del monitor
+    function animate() {
+        requestAnimationFrame(animate); // Programa al navegador para volver a ejecutar esta función en el siguiente cuadro de la pantalla
+        const t = Date.now() * 0.001;   // Convierte el reloj interno en una variable de tiempo en segundos constantes
+        
+        // Aplica movimiento de flotación vertical continuo a la esfera usando la función trigonométrica Seno
+        sphere.position.y = Math.sin(t) * 0.2;
+        // Rota de forma continua el toroide en su eje Z
+        torus.rotation.z += 0.01;
+        // Hace rotar lentamente sobre su propio eje vertical Y a todo el grupo del fractal completo
+        fractalGroup.rotation.y += 0.005;
+        
+        // Actualiza el suavizado y los cálculos interactivos de la cámara
+        controls.update();
+        // Renderiza el lienzo tridimensional de los polígonos (WebGL)
+        renderer.render(scene, camera);
+        // Renderiza en paralelo las posiciones bidimensionales en pantalla de los textos HTML flotantes
+        labelRenderer.render(scene, camera);
+    }
+
+    // Escucha cuando el navegador cambia de tamaño físico (al redimensionar la ventana o rotar el móvil)
+    window.addEventListener('resize', () => {
+        // Actualiza la proporción matemática de la cámara para que no aplaste las geometrías
+        camera.aspect = window.innerWidth / window.innerHeight;
+        // Fuerza a la cámara a reconstruir su matriz óptica con las nuevas medidas
+        camera.updateProjectionMatrix();
+        // Redimensiona el lienzo de renderizado WebGL
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Redimensiona el lienzo de renderizado de las etiquetas de texto
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Ejecuta de manera manual la función por primera vez para arrancar el ciclo infinito de animación
+    animate();
 </script>
-
 </body>
 </html>
